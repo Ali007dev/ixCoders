@@ -3,6 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Services\FilterService;
+use DeepCopy\Filter\Filter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,6 +13,8 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
+
+
     use HasFactory, Notifiable;
 
     /**
@@ -64,5 +69,56 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+
+
+
+    public function tasks()
+    {
+        return $this->belongsToMany(Task::class, 'task_users');
+    }
+
+
+
+
+
+    public function dateTasks()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(TaskUser::class, 'user_id');
+        return app(FilterService::class)->filterDate($result, $date, 'date');
+    }
+
+    public function toDoTasks()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(TaskUser::class, 'user_id')->where('status', 'to_do');
+        return app(FilterService::class)->filterDate($result, $date, 'date');
+    }
+    public function doneTasks()
+    {
+
+
+        $date = request()->query('date');
+        $result = $this->hasMany(TaskUser::class, 'user_id')->where('status', 'done');
+        return app(FilterService::class)->filterDate($result, $date, 'date');
+    }
+
+    public function waitingTasks()
+    {
+
+        $date = request()->query('date');
+        $result = $this->hasMany(TaskUser::class, 'user_id')->where('status', 'waiting');
+        return app(FilterService::class)->filterDate($result, $date, 'date');
+    }
+
+
+    public function inProgressTasks()
+    {
+
+        $date = request()->query('date');
+        $result = $this->hasMany(TaskUser::class, 'user_id')->where('status', 'in_progress');
+        return app(FilterService::class)->filterDate($result, $date, 'date');
     }
 }

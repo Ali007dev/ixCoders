@@ -10,4 +10,11 @@ class TaskUser extends Model
     use HasFactory;
     protected $fillable=['user_id','task_id','role','status','description','date'];
 
+
+
+    public function scheduleTask()
+    {
+        $result = $this->hasMany(ScheduleTask::class, 'action_id');
+        return $result;
+    }
 }

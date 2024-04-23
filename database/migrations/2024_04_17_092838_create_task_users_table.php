@@ -21,7 +21,6 @@ return new class extends Migration
             $table->date('date')->nullable();
 
 
-            $table->unique(['user_id', 'task_id']);
             $table->timestamps();
         });
     }

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+
+    //show users
     public function index()  {
         $response = User::query()->get();
         $users = $response;
@@ -14,11 +16,6 @@ class UserController extends Controller
 
        }
 
-       public function update(Request $request,$id)  {
-        $response = User::findOrFail($id);
-         $response->update($request->toArray());
-        return redirect()->back();
 
-       }
 }
 

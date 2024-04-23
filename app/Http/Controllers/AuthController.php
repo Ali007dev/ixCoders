@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
@@ -16,15 +17,16 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register() {
+    public function register()
+    {
         $validator = FacadesValidator::make(request()->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:8',
         ]);
 
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
+        if ($validator->fails()) {
+            return ResponseHelper::error();
         }
 
         $user = new User;
@@ -33,7 +35,7 @@ class AuthController extends Controller
         $user->password = bcrypt(request()->password);
         $user->save();
 
-        return response()->json($user, 201);
+        return ResponseHelper::success($user,'created successfully');
     }
 
 
@@ -46,11 +48,11 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        if (!$token = auth()->attempt($credentials)) {
+            return ResponseHelper::error('Unauthorized ');
         }
 
-        return $this->respondWithToken($token);
+        return ResponseHelper::success($token,'created successfully');
     }
 
     /**

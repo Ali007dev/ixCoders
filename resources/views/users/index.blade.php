@@ -55,6 +55,7 @@
 
       </tbody>
     </table>
+    
   </div>
 
   <div id="editUser" class="modal fade">
